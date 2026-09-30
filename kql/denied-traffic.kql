@@ -1,0 +1,6 @@
+NTANetAnalytics
+| where TimeGenerated > ago(1h)
+| where SubType == 'FlowLog'
+| where FlowStatus == 'D'
+| summarize DeniedCount = count() by SrcIp, DestIp, DestPort
+| order by DeniedCount desc

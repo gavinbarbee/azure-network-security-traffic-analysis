@@ -1,0 +1,4 @@
+AZFWNetworkRule
+| where TimeGenerated > ago(1h)
+| project TimeGenerated, SourceIp, DestinationIp, DestinationPort, Protocol, Action, RuleCollection, Rule
+| order by TimeGenerated desc

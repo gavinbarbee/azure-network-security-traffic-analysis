@@ -1,0 +1,15 @@
+# Terraform
+terraform.tfvars
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+
+# Claude Code
+CLAUDE.md
+.claude/
+
+# Packet capture files
+*.cap
+*.pcap

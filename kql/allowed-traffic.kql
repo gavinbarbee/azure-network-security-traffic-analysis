@@ -1,0 +1,6 @@
+NTANetAnalytics
+| where TimeGenerated > ago(30m)
+| where SubType == 'FlowLog'
+| where FlowStatus == 'A' // A = Allowed, D = Denied
+| project TimeGenerated, SrcIp, DestIp, DestPort, L4Protocol
+| order by TimeGenerated desc
