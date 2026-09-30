@@ -949,9 +949,7 @@ az group list --query "[?contains(name, 'lab-network')].name" -o table
 
 ## 💡 Key Takeaways
 
-> ✏️ *Draft — to be reviewed and put in my own words.*
-
-- **The same lab from a few years ago wouldn't deploy today.** Azure Firewall Basic requires a management subnet, a second public IP, and a Firewall Policy instead of classic rules. NSG flow logs can no longer be created at all. Checking current requirements before writing code saved several failed applies.
+- **Azure's current requirements shaped the design.** Azure Firewall Basic requires a management subnet, a second public IP, and a Firewall Policy instead of classic rules, and NSG flow logs can no longer be created at all. Checking what Azure accepts today before writing code saved several failed applies.
 - **TTL made the routing visible.** Every reply came back at `ttl=63`, one hop below Linux's default of 64. That's evidence the UDRs were sending spoke-to-spoke traffic through the firewall, not around it. The packet capture confirmed it from spoke1's side: requests left at TTL 64, and replies came back at TTL 63. Switching the rule collection to Deny dropped 100% of packets, and the firewall's `AZFWNetworkRule` log recorded both the Allow and Deny decisions.
 - **"Configured" isn't the same as "working."** Both VNet flow logs reported `Enabled` and `Succeeded` with Traffic Analytics on, yet they never wrote a single blob. I traced the pipeline stage by stage (configuration, raw blobs in storage, Traffic Analytics, workspace table) to find where it stopped. Recreating the flow logs didn't fix it, and I tore down without a root cause rather than keep paying for the firewall.
 - **Azure creates things Terraform doesn't know about.** The Network Watcher, the packet capture, and Traffic Analytics' data collection rule and endpoint all live outside state. Traffic Analytics even recreated its endpoint mid-teardown. The provider's `prevent_deletion_if_contains_resources` check caught it, and the right fix was to clean up the leftover, not disable the check.
